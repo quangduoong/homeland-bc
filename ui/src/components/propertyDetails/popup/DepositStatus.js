@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import { useContext } from "react";
 import { ListingsContext } from "../../../context/Listings/ListingsContextProvider";
 import successAlert from "../../alerts/successAlert";
+import { sendEmail, templates } from "../../../blockchain/utils/emailUtils";
 
 export default function DepositStatus({ house, user }) {
   const { updateListing } = useContext(ListingsContext);
@@ -45,11 +46,17 @@ export default function DepositStatus({ house, user }) {
         });
 
         if (response.success) {
+          var success = await sendEmail(templates.get("deposit_confirmed"), {
+            to_email: user.email,
+            to_name: user.name,
+            property_link: window.location.href,
+          });
+
           successAlert("Withdrawal completed.");
         }
       }
 
-      window.location.href("http://localhost:3000/me");
+      window.location.href = "http://localhost:3000/";
     });
   }
 

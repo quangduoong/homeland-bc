@@ -6,12 +6,16 @@ import Swal from "sweetalert2";
 import { ListingsContext } from "../../../../context/Listings/ListingsContextProvider";
 import BlockchainUtils from "../../../../blockchain/utils/blockchainUtils";
 import successAlert from "../../../alerts/successAlert";
+import { sendEmail, templates } from "../../../../blockchain/utils/emailUtils";
+import { AuthContext } from "../../../../context/Auth/AuthContextProvider";
 
 function ManageRenters({ _listings }) {
   const { updateListing } = useContext(ListingsContext);
   const [isShowAction, setIsShowAction] = useState();
   const [loading, setLoading] = useState(true);
   const [listings, setListings] = useState(_listings);
+
+  const { findUser } = useContext(AuthContext);
 
   const headers = [
     "Property",
@@ -45,7 +49,7 @@ function ManageRenters({ _listings }) {
   }
 
   /** Deny buyer */
-  function onDenyDeposit(listingId) {
+  function onDenyDeposit(listing) {
     Swal.fire({
       title: "Are you sure to deny?",
       html: "You can change your mind later, don't worry.",
@@ -56,13 +60,22 @@ function ManageRenters({ _listings }) {
       if (!result.isConfirmed) return;
 
       var response = await updateListing({
-        id: listingId,
+        id: listing._id,
         data: {
           depositStatus: "Denied",
         },
       });
 
-      if (response.success) await successAlert("Denied successfully.");
+      if (response.success) {
+        var user = await findUser(listing.depositBy);
+        user = user.user;
+        var success = await sendEmail(templates.get("deposit_changes"), {
+          to_email: user.email,
+          to_name: user.name,
+          property_link: "http://localhost:3000/property/" + listing._id,
+        });
+        if (success) await successAlert("Denied successfully.");
+      }
 
       window.location.reload();
     });
@@ -100,14 +113,23 @@ function ManageRenters({ _listings }) {
             depositAddress: null,
           },
         });
-        if (response.success) await success("Removed successfully.");
+        if (response.success) {
+          var user = await findUser(listing.depositBy);
+          user = user.user;
+          var success1 = await sendEmail(templates.get("deposit_changes"), {
+            to_email: user.email,
+            to_name: user.name,
+            property_link: "http://localhost:3000/property/" + listing._id,
+          });
+          if (success1) await success("Removed successfully.");
+        }
       }
       window.location.reload();
     });
   }
 
   /** Confirm the deposit, begin a contract between seller and buyer*/
-  function onConfirmDeposit(listingId) {
+  function onConfirmDeposit(listing) {
     Swal.fire({
       title: "Confirm deposit?",
       html: "We will notify buyer.",
@@ -118,14 +140,23 @@ function ManageRenters({ _listings }) {
       if (!result.isConfirmed) return;
 
       var response = await updateListing({
-        id: listingId,
+        id: listing._id,
         data: {
           depositStatus: "Confirmed",
         },
       });
 
       if (response.success) {
-        await successAlert("Confirmed deposit.");
+        var user = await findUser(listing.depositBy);
+        user = user.user;
+
+        var success = await sendEmail(templates.get("deposit_changes"), {
+          to_email: user.email,
+          to_name: user.name,
+          property_link: window.location.href,
+        });
+
+        if (success) await successAlert("Confirmed deposit.");
       }
 
       window.location.reload();
@@ -162,7 +193,16 @@ function ManageRenters({ _listings }) {
         });
 
         if (response.success) {
-          await successAlert("Marked as finish.");
+          var user = await findUser(listing.depositBy);
+          user = user.user;
+
+          var success = await sendEmail(templates.get("deposit_changes"), {
+            to_email: user.email,
+            to_name: user.name,
+            property_link: "http://localhost:3000/property/" + listing._id,
+          });
+
+          if (success) await successAlert("Marked as finish.");
         }
 
         window.location.reload();
@@ -263,7 +303,7 @@ function ManageRenters({ _listings }) {
                         <Menu.Item
                           as="div"
                           className="hover:bg-gray-200 rounded p-1 cursor-pointer"
-                          onClick={() => onConfirmDeposit(row._id)}
+                          onClick={() => onConfirmDeposit(row)}
                         >
                           Confirm
                         </Menu.Item>
@@ -272,7 +312,7 @@ function ManageRenters({ _listings }) {
                         <Menu.Item
                           as="div"
                           className="hover:bg-gray-200 rounded p-1 cursor-pointer"
-                          onClick={() => onDenyDeposit(row._id)}
+                          onClick={() => onDenyDeposit(row)}
                         >
                           Deny
                         </Menu.Item>

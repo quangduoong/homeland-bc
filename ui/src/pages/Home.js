@@ -4,7 +4,6 @@ import { ImSpinner9 } from "react-icons/im";
 // import components
 import Banner from "../components/Banner";
 import HouseList from "../components/HouseList";
-import Search from "../components/Search";
 import { ListingsContext } from "../context/Listings/ListingsContextProvider";
 
 const Home = () => {
@@ -17,11 +16,9 @@ const Home = () => {
   useEffect(() => {
     const loadData = async () => {
       const res = await getAvailable();
-
       setListings(res.listings);
     };
     loadData();
-    // console.log(listings);
   }, []);
 
   return listingsLoading ? (

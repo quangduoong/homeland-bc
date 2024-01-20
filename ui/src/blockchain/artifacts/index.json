@@ -12,7 +12,7 @@
         },
         {
           "indexed": false,
-          "internalType": "string",
+          "internalType": "string", 
           "name": "buyerId",
           "type": "string"
         },
@@ -14954,12 +14954,12 @@
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x6eae981bb8C07DcA918356BD7135a1Dac4c753e0",
-      "transactionHash": "0x8734954adda2785312a7b40d5df1b5bbfac799b9afcb197fb268aea9f748d872"
+      "address": "0x28C2305e2da40DA1f72762aD12d2D2431c07B345",
+      "transactionHash": "0x023483d292cda66957829d9cc8bf686b7dd7ebd027db6d81b27e4f8cd7f656a3"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-01-05T17:26:06.709Z",
+  "updatedAt": "2024-01-19T14:15:58.468Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

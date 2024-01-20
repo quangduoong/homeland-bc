@@ -24,11 +24,19 @@ export default class BlockchainUtils {
   }
 
   async transfer(listingId, buyerId, receiverAddress) {
+    const _web3 = new Web3(
+      new Web3.providers.HttpProvider("http://localhost:7545")
+    );
+    const _contract = new _web3.eth.Contract(
+      artifacts.abi,
+      artifacts.networks[5777].address
+    );
+
     try {
-      await this.contract.methods
+      await _contract.methods
         .transfer(listingId, buyerId, receiverAddress)
         .send({
-          from: this.account,
+          from: "0x50D89B289c953272Cd7B13C9541A0Abf3104fc60",
           gas: 200000,
           value: "0",
         });

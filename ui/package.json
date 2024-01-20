@@ -4,10 +4,12 @@
   "private": true,
   "dependencies": {
     "@emailjs/browser": "^3.10.0",
+    "@emailjs/nodejs": "^2.2.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.1",
+    "enum": "^3.0.4",
     "fs": "^0.0.1-security",
     "react": "^18.1.0",
     "react-chartjs-2": "^5.1.0",

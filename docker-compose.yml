@@ -2,13 +2,13 @@ version: "3.8"
 
 services:
   mongodb:
-    image: bitnami/mongodb:6.0.12
+    image: docker.io/bitnami/mongodb:6.0.12
     hostname: mongodb
     container_name: mongodb
     ports:
       - "27017:27017"
     volumes:
-      - "./.containers/mongo:/bitnami/mongodb"
+      - "./.containers/mongo:/bitnami/mongodb:U"
     networks:
       - "homeland-bc"
 

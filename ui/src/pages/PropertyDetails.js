@@ -14,6 +14,7 @@ import { ListingsContext } from "../context/Listings/ListingsContextProvider";
 import Swal from "sweetalert2";
 import successAlert from "../components/alerts/successAlert";
 import errorAlert from "../components/alerts/errorAlert";
+import { sendEmail, templates } from "../blockchain/utils/emailUtils";
 
 const PropertyDetails = () => {
   const location = useLocation();
@@ -167,7 +168,13 @@ const PropertyDetails = () => {
           },
         });
         await successAlert("Deposit confirmed!");
-        window.location.href("http://localhost:3000/me");
+        var success = await sendEmail(templates.get("deposit_confirmed"), {
+          to_email: user.email,
+          to_name: user.name,
+          property_link: window.location.href,
+        });
+
+        window.location.href = "http://localhost:3000/";
       } else {
         await errorAlert("Deposit failed.");
       }
